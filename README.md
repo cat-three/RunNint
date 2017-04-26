@@ -4,7 +4,7 @@ RunNint is a collection of iOS tweaks that allow you to play various Nintendo ap
 
 ## Usage
 
-- Until this is published, pre-build .deb packages should be in the `packages` folder in each tweak folder. These should work under 32-bit as well, but they are so far only tested on 64-bit devices. These can be installed with any usual .deb installed, such as Filza.
+- Until this is published, pre-build .deb packages should be in the `packages` folder in each tweak folder. These should work under 32-bit as well, but they are so far only tested on 64-bit devices. These can be installed with any usual .deb installer, such as Filza.
 - Compile with THEOS, `make package FINALPACKAGE=1` in each tweak folder.
 
 ## Why
