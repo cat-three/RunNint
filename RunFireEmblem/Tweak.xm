@@ -1,3 +1,5 @@
+#include <Foundation/Foundation.h>
+#include <substrate.h>
 
 BOOL allowAccess(NSString *filename) {
    NSArray *NotAllowedPathPrefixes =
@@ -33,5 +35,20 @@ BOOL allowAccess(NSString *filename) {
     return NO;
   }
   return %orig;
+}
+%end
+
+%hook NSBundle
+- (id)objectForInfoDictionaryKey:(NSString *)key {
+  if ([key isEqualToString:@"SignerIdentity"]) {
+    return 0;
+  }
+  return %orig;
+}
+%end
+
+%hook CLSAnalyticsMetadataController
++ (BOOL)hostJailbroken {
+  return NO;
 }
 %end
