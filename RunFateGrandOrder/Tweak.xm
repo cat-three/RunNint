@@ -108,7 +108,7 @@ BOOL allowAccess(NSString *filename) {
         "/bin/sh",
         "/Applications/Cydia.app/Cydia",
         "/usr/sbin/sshd"
-    }
+    };
     int counter;
     for (counter = 0; counter < 12; counter++) {
         if (!strcmp(pathname, filenames[counter])) {
