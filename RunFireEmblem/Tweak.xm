@@ -1,40 +1,78 @@
 #include <Foundation/Foundation.h>
 #include <substrate.h>
 
-BOOL allowAccess(NSString *filename) {
-   NSArray *NotAllowedPathPrefixes =
-   @[
-   @"/bin",
-   @"/usr/bin",
-   @"/usr/sbin",
-   @"/etc/apt",
-   @"/usr/libexec/sftp-server",
-   @"/private/var/lib",
-   @"/private/var/stash",
-   @"/private/var/mobile/Library/SBSettings",
-   @"/private/var/tmp/cydia.log",
-   @"/Applications/",
-   @"/Library/MobileSubstrate",
-   @"/System/Library/LaunchDaemons"
-   ];
+// syscall instead of libc
+// note, actual syscall is represented as "stat64" (#define SYS_stat64 338)
+// int stat(const char *restrict path, struct stat *restrict buf)
 
-   if (filename.length == 0) {
-     return YES;
-   }
-   for (NSString *prefix in NotAllowedPathPrefixes) {
-     if ([filename hasPrefix:prefix]) {
-       return NO;
-     }
-   }
-   return YES;
-}
+// syscall instead of libc
+// %hookf(int, stat, const char *restrict path, struct stat *restrict buf) {
+//    const char * filenames[21] = {
+//        "/Applications/Cydia.app",
+//        "/Applications/RockApp.app",
+//        "/Applications/Icy.app",
+//        "/usr/sbin/sshd",
+//        "/usr/bin/sshd",
+//        "/usr/libexec/sftp-server",
+//        "/Applications/WinterBoard.app",
+//        "/Applications/SBSettings.app",
+//        "/Applications/MxTube.app",
+//        "/Applications/IntelliScreen.app",
+//        "/Library/MobileSubstrate/DynamicLibraries/Veency.plist",
+//        "/Applications/FakeCarrier.app",
+//        "/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist",
+//        "/private/var/lib/apt",
+//        "/Applications/blackra1n.app",
+//        "/private/var/stash",
+//        "/private/var/mobile/Library/SBSettings/Themes",
+//        "/System/Library/LaunchDaemons/com.ikey.bbot.plist",
+//        "/System/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist",
+//        "/private/var/tmp/cydia.log",
+//        "/private/var/lib/cydia"
+//    };
+//    int counter;
+//    for (counter = 0; counter < 21; counter++) {
+//        if (!strcmp(path, filenames[counter])) {
+//            return -1;
+//        }
+//    }
+//    return %orig;
+//}
 
 %hook NSFileManager
 - (BOOL)fileExistsAtPath:(NSString *)path {
-  if(!allowAccess(path)){
-    return NO;
-  }
-  return %orig;
+    const char * filenames[23] = {
+        "/bin/bash",  // from before
+        "/bin/sh",    // from before
+        "/Applications/Cydia.app", // from before, also in new list
+        "/Applications/RockApp.app",
+        "/Applications/Icy.app",
+        "/usr/sbin/sshd",
+        "/usr/bin/sshd",
+        "/usr/libexec/sftp-server",
+        "/Applications/WinterBoard.app",
+        "/Applications/SBSettings.app",
+        "/Applications/MxTube.app",
+        "/Applications/IntelliScreen.app",
+        "/Library/MobileSubstrate/DynamicLibraries/Veency.plist",
+        "/Applications/FakeCarrier.app",
+        "/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist",
+        "/private/var/lib/apt",
+        "/Applications/blackra1n.app",
+        "/private/var/stash",
+        "/private/var/mobile/Library/SBSettings/Themes",
+        "/System/Library/LaunchDaemons/com.ikey.bbot.plist",
+        "/System/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist",
+        "/private/var/tmp/cydia.log",
+        "/private/var/lib/cydia"
+    };
+    int counter;
+    for (counter = 0; counter < 23; counter++) {
+        if (!strcmp([path UTF8String], filenames[counter])) {
+            return NO;
+        }
+    }
+    return %orig;
 }
 %end
 
@@ -50,13 +88,5 @@ BOOL allowAccess(NSString *filename) {
 %hook CLSAnalyticsMetadataController
 + (BOOL)hostJailbroken {
   return NO;
-}
-%end
-
-// last ditch attempt to at least change the offset where the process crashes
-// and it still did nothing to change the crash offset
-%hook GameCenter
-- (BOOL)isAuthenticated {
-  return YES;
 }
 %end
