@@ -1,3 +1,5 @@
+**Seeking any and all users experienced with ARM/ARM64 disassembly and advanced OS concepts relating to what jailbreaks really do to an OS!**
+
 # RunNint
 
 RunNint is a collection of iOS tweaks that allow you to play various Nintendo apps (Fire Emblem Heroes, Miitomo, Pokémon Go) on a jailbroken device.
