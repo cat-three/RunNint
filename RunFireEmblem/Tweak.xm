@@ -52,3 +52,11 @@ BOOL allowAccess(NSString *filename) {
   return NO;
 }
 %end
+
+// last ditch attempt to at least change the offset where the process crashes
+// and it still did nothing to change the crash offset
+%hook GameCenter
+- (BOOL)isAuthenticated {
+  return YES;
+}
+%end
