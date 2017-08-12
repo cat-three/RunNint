@@ -2,6 +2,8 @@ FILE *fopen(const char *path, const char *mode);
 int   stat(const char *path, struct stat *buf);
 int   lstat(const char *path, struct stat *buf);
 int   sysctlbyname(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen);
+// syscall instead of libc
+int   access(const char *pathname, int mode);
 
 BOOL allowAccess(NSString *filename) {
    NSArray *NotAllowedPathPrefixes =
@@ -80,6 +82,37 @@ BOOL allowAccess(NSString *filename) {
         if (!strcmp(name, sysctls[counter])) {
             oldp = 0xFAFAFAFA;
             return 0;
+        }
+    }
+    return %orig;
+}
+
+// syscall instead of libc
+%hookf(int, access, const char *pathname, int mode) {
+    const char * filenames[18] = {
+        "/usr/lib/libmis.dylib",
+        "/pguntether",
+        "/System/Library/Caches/com.apple.xpcd/xpcd_cache.dylib",
+        "/panguaxe",
+        "/System/Library/LaunchDaemons/io.pangu.untether.plist",
+        "/evasi0n7",
+        "/taig/taig",
+        "/usr/lib/pangu_xpcd.dylib",
+        "/xuanyuansword",
+        "/System/Library/LaunchDaemons/io.pangu.axe.untether.plist",
+        "/xuanyuansword.installed",
+        "/panguaxe.installed",
+        "/System/Library/Caches/com.apple.dyld/enable-dylibs-to-overrie-c",
+        "/System/Library/LaunchDaemons/com.evad3rs.evasi0n7.untether.plis",
+        "/bin/bash",
+        "/bin/sh",
+        "/Applications/Cydia.app/Cydia",
+        "/usr/sbin/sshd"
+    }
+    int counter;
+    for (counter = 0; counter < 12; counter++) {
+        if (!strcmp(pathname, filenames[counter])) {
+            return -1;
         }
     }
     return %orig;
