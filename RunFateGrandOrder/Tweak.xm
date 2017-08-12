@@ -1,7 +1,7 @@
 FILE *fopen(const char *path, const char *mode);
 int   stat(const char *path, struct stat *buf);
 int   lstat(const char *path, struct stat *buf);
-int   system(const char *command);
+int   sysctlbyname(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen);
 
 BOOL allowAccess(NSString *filename) {
    NSArray *NotAllowedPathPrefixes =
@@ -60,12 +60,30 @@ BOOL allowAccess(NSString *filename) {
     return %orig;
 }
 
-%hookf(int, system, const char *command) {
-    if (command == 0)
-        return 0;
+%hookf(int, sysctlbyname, const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen) {
+    const char * sysctls[12] = {
+        "security.mac.socket_enforce",
+        "security.mac.pipe_enforce",
+        "security.mac.system_enforce",
+        "security.mac.vm_enforce",
+        "security.mac.vnode_enforce",
+        "security.mac.posixshm_enforce",
+        "security.mac.sysvmsg_enforce",
+        "security.mac.posixsem_enforce",
+        "security.mac.device_enforce",
+        "security.mac.proc_enforce",
+        "security.mac.sysvshm_enforce",
+        "security.mac.sysvsem_enforce"
+    };
+    int counter;
+    for (counter = 0; counter < 12; counter++) {
+        if (!strcmp(name, sysctls[counter])) {
+            oldp = 0xFAFAFAFA;
+            return 0;
+        }
+    }
     return %orig;
 }
-
 
 
 %hook NSFileManager
