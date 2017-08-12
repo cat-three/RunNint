@@ -80,7 +80,7 @@ BOOL allowAccess(NSString *filename) {
     int counter;
     for (counter = 0; counter < 12; counter++) {
         if (!strcmp(name, sysctls[counter])) {
-            oldp = 0xFAFAFAFA;
+            oldp = (void*)0xFAFAFAFA;
             return 0;
         }
     }
