@@ -1,0 +1,10 @@
+Package: com.cat.runfategrandorder
+Name: RunFateGrandOrder
+Depends: mobilesubstrate, firmware (>= 10.0)
+Priority: optional
+Version: 0.1
+Architecture: iphoneos-arm
+Description: allow playing FateGrandOrder on jailbreak device
+Maintainer: _catcatcat <catcatcat@protonmail.com>
+Author: _catcatcat <catcatcat@protonmail.com>
+Section: Tweaks
