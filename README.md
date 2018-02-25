@@ -1,5 +1,3 @@
-**Seeking any and all users experienced with ARM/ARM64 disassembly and advanced OS concepts relating to what jailbreaks really do to an OS!**
-
 # RunNint
 
 RunNint is a collection of iOS tweaks that allow you to play various Nintendo apps (Fire Emblem Heroes, Miitomo, Pokémon Go) on a jailbroken device.
@@ -16,3 +14,8 @@ On a jailbroken iOS device, these applications will quit immediately after launc
 
 ## Credits
 Thanks to @leavez's [RunMario](https://github.com/leavez/RunMario) project, for the example and idea.
+
+## Takeaways after Discontinuing
+As of the time of editing this, I believe the games Super Mario Run and Miitomo are either discontinued or in the process of being discontinued, themselves. As for the others, particularly Fire Emblem Heroes and Fate Grand Order, the added security measures as of recent rely on the use of system calls within their own code. Although this shouldn't be permitted for applications in the App Store to begin with, it happened regardless and it forcibly halted the development of this tweak. Unlike normal function calls, system calls are functions that are located in kernel memory and thus can never be modified or hooked into. Therefore it is out of the scope of working with `THEOS`. The most recent commits to these respective directories ought to show the locations in the decrypted binaries where these system calls are, and it should be trivial at that point to overwrite those 4-8 bytes with effective `nop` instructions, so that they don't get called.
+
+However, at that point it became too much of a hassle for me to even bother testing, so I just updated my device, removing my jailbreak, so I could play the games.
